@@ -1,0 +1,80 @@
+function tks_gtm_search_suggestion_event(suggestion) {
+    window.dataLayer = window.dataLayer || [];
+
+    window.dataLayer.push({
+        'event': 'event',
+        'eventCategory': 'tokstok:blog:geral',
+        'eventAction': 'interacao:busca:sugestao',
+        'eventLabel': suggestion.gtm_id
+    });
+}
+
+function tks_gtm_search_button_event(term) {
+    window.dataLayer = window.dataLayer || [];
+
+    window.dataLayer.push({
+        'event': 'event',
+        'eventCategory': 'tokstok:blog:geral',
+        'eventAction': 'interacao:busca',
+        'eventLabel': term
+    });
+}
+
+function tks_gtm_cta(postName, ctaTitle) {
+    window.dataLayer = window.dataLayer || [];
+
+    window.dataLayer.push({
+        'event': 'event',
+        'eventCategory': 'tokstok:blog:posts',
+        'eventAction': 'clique:cta',
+        'eventLabel': postName + ':' + ctaTitle
+    });
+}
+
+function tks_slugify(str) {
+    var map = {
+        'a' : 'á|à|ã|â|À|Á|Ã|Â',
+        'e' : 'é|è|ê|É|È|Ê',
+        'i' : 'í|ì|î|Í|Ì|Î',
+        'o' : 'ó|ò|ô|õ|Ó|Ò|Ô|Õ',
+        'u' : 'ú|ù|û|ü|Ú|Ù|Û|Ü',
+        'c' : 'ç|Ç',
+        'n' : 'ñ|Ñ'
+    };
+
+    for (var pattern in map) {
+        str = str.replace(new RegExp(map[pattern], 'g'), pattern);
+    }
+
+    str = str.replace(/\W/g, '-');
+
+    while (str.match(/--/)) {
+        str = str.replace(/--/g, '-');
+    }
+
+    str = str.replace(/-$/g, '');
+
+    str = str.toLowerCase();
+
+    return str;
+}
+
+jQuery(document).ready(function ($) {
+    "use strict";
+
+    $('.mobile-nav').find('.ux-search-submit').click(function () {
+        var term = $('.mobile-nav').find('.search-field').val();
+
+        tks_gtm_search_button_event(term);
+    });
+
+    $('.header-nav').find('.ux-search-submit').click(function () {
+        var term = $('.header-nav').find('.search-field').val();
+
+        tks_gtm_search_button_event(term);
+    });
+
+    $('.article-inner > .entry-content a').click(function () {
+        tks_gtm_cta(POST_SLUG, tks_slugify(this.innerText));
+    })
+});
